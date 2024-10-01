@@ -19,11 +19,17 @@ function inferOption(option, defaultValue) {
  * Recursively get the correct import order from rollup
  * We only process a file once
  *
- * @param {string} id
+ * @param {Array<string>} ids
  * @param {Function} getModuleInfo
  * @param {Set<string>} seen
  */
-function getRecursiveImportOrder(id, getModuleInfo, seen = new Set()) {
+function getRecursiveImportOrder(ids, getModuleInfo, seen = new Set()) {
+  return ids.flatMap((id) => {
+    return getRecursiveImportOrderForModule(id, getModuleInfo, seen)
+  })
+}
+
+function getRecursiveImportOrderForModule(id, getModuleInfo, seen = new Set()) {
   if (seen.has(id)) {
     return []
   }
@@ -31,8 +37,10 @@ function getRecursiveImportOrder(id, getModuleInfo, seen = new Set()) {
   seen.add(id)
 
   const result = [id]
-  getModuleInfo(id).importedIds.forEach(importFile => {
-    result.push(...getRecursiveImportOrder(importFile, getModuleInfo, seen))
+  getModuleInfo(id).importedIds.forEach((importFile) => {
+    result.push(
+      ...getRecursiveImportOrderForModule(importFile, getModuleInfo, seen)
+    )
   })
 
   return result
@@ -163,6 +171,11 @@ export default (options = {}) => {
           options_.dir,
           Object.keys(bundle).find(fileName => bundle[fileName].isEntry)
         )
+      const entryFiles = options_.file
+        ? [options_.file]
+        : Object.keys(bundle)
+            .filter((fileName) => bundle[fileName].isEntry)
+            .map((fileName) => path.join(options_.dir, fileName))
       const getExtracted = () => {
         let fileName = `${path.basename(file, path.extname(file))}.css`
         if (typeof postcssLoaderOptions.extract === 'string') {
@@ -171,13 +184,19 @@ export default (options = {}) => {
 
         const concat = new Concat(true, fileName, '\n')
         const entries = [...extracted.values()]
-        const { modules, facadeModuleId } = bundle[
-          normalizePath(path.relative(dir, file))
-        ]
+        const facadeModuleIds = entryFiles
+          .map((entryFile) => {
+            const { modules, facadeModuleId } = bundle[
+              normalizePath(path.relative(dir, entryFile))
+            ]
+            if (modules) return facadeModuleId
+            return false
+          })
+          .filter((n) => n)
 
-        if (modules) {
+        if (facadeModuleIds.length > 0) {
           const moduleIds = getRecursiveImportOrder(
-            facadeModuleId,
+            facadeModuleIds,
             this.getModuleInfo
           )
           entries.sort(
