@@ -251,6 +251,52 @@ console.log(foo, bar);
 "
 `;
 
+exports[`extract multiple-inputs-resolve: css code 1`] = `
+".should-be-first {
+  color: red;
+}
+
+.from-index {
+  color: red;
+}
+
+.from-other {
+  color: blue;
+}
+
+/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbImZpcnN0QW5kU2hhcmVkLmNzcyIsImJ1bmRsZS5jc3MiLCJvdGhlci5jc3MiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IkFBQUE7RUFDRSxVQUFVO0FBQ1o7O0FDRkE7RUFDRSxVQUFVO0FBQ1o7O0FDRkE7RUFDRSxXQUFXO0FBQ2IiLCJmaWxlIjoiaW5kZXguY3NzIiwic291cmNlc0NvbnRlbnQiOlsiLnNob3VsZC1iZS1maXJzdCB7XG4gIGNvbG9yOiByZWQ7XG59XG4iLCIuZnJvbS1pbmRleCB7XG4gIGNvbG9yOiByZWQ7XG59XG4iLCIuZnJvbS1vdGhlciB7XG4gIGNvbG9yOiBibHVlO1xufVxuIl19*/"
+`;
+
+exports[`extract multiple-inputs-resolve: js code 1`] = `
+"'use strict';
+
+console.log('here to prevent warnings');
+"
+`;
+
+exports[`extract multiple-inputs-resolve-reverse: css code 1`] = `
+".should-be-first {
+  color: red;
+}
+
+.from-other {
+  color: blue;
+}
+
+.from-index {
+  color: red;
+}
+
+/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbImZpcnN0QW5kU2hhcmVkLmNzcyIsIm90aGVyLmNzcyIsImJ1bmRsZS5jc3MiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IkFBQUE7RUFDRSxVQUFVO0FBQ1o7O0FDRkE7RUFDRSxXQUFXO0FBQ2I7O0FDRkE7RUFDRSxVQUFVO0FBQ1oiLCJmaWxlIjoiaW5kZXguY3NzIiwic291cmNlc0NvbnRlbnQiOlsiLnNob3VsZC1iZS1maXJzdCB7XG4gIGNvbG9yOiByZWQ7XG59XG4iLCIuZnJvbS1vdGhlciB7XG4gIGNvbG9yOiBibHVlO1xufVxuIiwiLmZyb20taW5kZXgge1xuICBjb2xvcjogcmVkO1xufVxuIl19*/"
+`;
+
+exports[`extract multiple-inputs-resolve-reverse: js code 1`] = `
+"'use strict';
+
+console.log('here to prevent warnings');
+"
+`;
+
 exports[`extract nested: css code 1`] = `
 "body {
   color: red;

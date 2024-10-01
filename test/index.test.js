@@ -42,16 +42,20 @@ async function write({
   }
 
   outDir = fixture('dist', outDir)
+  const multipleInputs = Array.isArray(input)
+  const formattedInput = multipleInputs
+    ? input.map((i) => fixture(i))
+    : fixture(input)
   const bundle = await rollup({
-    input: fixture(input),
+    input: formattedInput,
     plugins: [postcss(postCssOptions), delayResolve && lateResolve].filter(
       Boolean
     )
   })
-  await bundle.write({
-    format: 'cjs',
-    file: path.join(outDir, 'bundle.js')
-  })
+  const writeOptions = multipleInputs
+    ? { format: 'cjs', dir: outDir }
+    : { format: 'cjs', file: path.join(outDir, 'bundle.js') }
+  await bundle.write(writeOptions)
   let cssCodePath = path.join(outDir, 'bundle.css')
   if (typeof options.extract === 'string') {
     cssCodePath = path.isAbsolute(options.extract) ? options.extract : path.join(outDir, options.extract)
@@ -336,6 +340,24 @@ snapshotMany('extract', [
       extract: true,
       delayResolve: true
     }
+  },
+  {
+    title: 'multiple-inputs-resolve',
+    input: ['multiple-inputs/bundle.js', 'multiple-inputs/other.js'],
+    options: {
+      sourceMap: 'inline',
+      extract: 'index.css',
+      delayResolve: true,
+    },
+  },
+  {
+    title: 'multiple-inputs-resolve-reverse',
+    input: ['multiple-inputs/other.js', 'multiple-inputs/bundle.js'],
+    options: {
+      sourceMap: 'inline',
+      extract: 'index.css',
+      delayResolve: true,
+    },
   }
 ])
 
